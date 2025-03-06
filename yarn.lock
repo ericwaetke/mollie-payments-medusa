@@ -7977,7 +7977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@variablevic/mollie-payments-medusa@workspace:.":
+"@variablevic/mollie-payments-medusa@npm:0.0.1, @variablevic/mollie-payments-medusa@workspace:.":
   version: 0.0.0-use.local
   resolution: "@variablevic/mollie-payments-medusa@workspace:."
   dependencies:
@@ -7998,6 +7998,7 @@ __metadata:
     "@types/node": "npm:^20.0.0"
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.2.25"
+    "@variablevic/mollie-payments-medusa": "npm:0.0.1"
     awilix: "npm:^8.0.1"
     pg: "npm:^8.13.0"
     prop-types: "npm:^15.8.1"

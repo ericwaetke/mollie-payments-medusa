@@ -7,6 +7,7 @@ import {
   AbstractPaymentProvider,
   BigNumber,
   MedusaError,
+  PaymentSessionStatus,
 } from "@medusajs/framework/utils";
 import {
   AuthorizePaymentInput,
@@ -22,7 +23,6 @@ import {
   GetPaymentStatusOutput,
   InitiatePaymentInput,
   InitiatePaymentOutput,
-  PaymentSessionStatus,
   RefundPaymentInput,
   RefundPaymentOutput,
   RetrievePaymentInput,
@@ -32,6 +32,7 @@ import {
 } from "@medusajs/types";
 import createMollieClient, {
   CaptureMethod,
+  Payment,
   PaymentCreateParams,
   PaymentStatus,
 } from "@mollie/api-client";
@@ -111,8 +112,6 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
     }/hooks/payment/${MolliePaymentProviderService.identifier}_${
       MolliePaymentProviderService.identifier
     }`;
-
-    this.logger.info(`options: ${JSON.stringify(options)}`);
 
     this.client = createMollieClient({
       apiKey: options.apiKey,
@@ -414,30 +413,26 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
   async getPaymentStatus(
     input: GetPaymentStatusInput
   ): Promise<GetPaymentStatusOutput> {
-    const { id, ...rest } = input.data as Record<string, any>;
+    const paymentId = input.data?.id as string;
 
     try {
-      const { status } = await this.client.payments.get(id, {
-        ...rest,
-      });
+      const { status } = await this.client.payments.get(paymentId);
 
       const statusMap = {
-        open: "requires_more",
-        canceled: "canceled",
-        pending: "pending",
-        authorized: "authorized",
-        expired: "expired",
-        failed: "error",
-        paid: "captured",
+        [PaymentStatus.open]: PaymentSessionStatus.REQUIRES_MORE,
+        [PaymentStatus.canceled]: PaymentSessionStatus.CANCELED,
+        [PaymentStatus.pending]: PaymentSessionStatus.PENDING,
+        [PaymentStatus.authorized]: PaymentSessionStatus.AUTHORIZED,
+        [PaymentStatus.expired]: PaymentSessionStatus.ERROR,
+        [PaymentStatus.failed]: PaymentSessionStatus.ERROR,
+        [PaymentStatus.paid]: PaymentSessionStatus.CAPTURED,
       };
 
-      const mappedStatus = statusMap[
-        status as keyof typeof statusMap
-      ] as PaymentSessionStatus;
+      const mappedStatus = statusMap[status] as PaymentSessionStatus;
 
       this.debug &&
         this.logger.debug(
-          `Mollie payment ${id} status: ${status} (mapped to: ${mappedStatus})`
+          `Mollie payment ${paymentId} status: ${status} (mapped to: ${mappedStatus})`
         );
 
       return {
@@ -445,7 +440,7 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
       };
     } catch (error) {
       this.logger.error(
-        `Error retrieving payment status for ${id}: ${error.message}`
+        `Error retrieving payment status for ${paymentId}: ${error.message}`
       );
       throw error;
     }
