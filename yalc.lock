@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@variablevic/mollie-payments-medusa": {
+      "signature": "0e0dcea5e4cbf01f1a0fd26432161955",
+      "file": true
+    }
+  }
+}
