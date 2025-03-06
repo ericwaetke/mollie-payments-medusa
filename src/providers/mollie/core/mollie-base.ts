@@ -7,6 +7,7 @@ import {
   AbstractPaymentProvider,
   BigNumber,
   MedusaError,
+  PaymentActions,
   PaymentSessionStatus,
 } from "@medusajs/framework/utils";
 import {
@@ -32,28 +33,12 @@ import {
 } from "@medusajs/types";
 import createMollieClient, {
   CaptureMethod,
-  Payment,
   PaymentCreateParams,
+  PaymentMethod,
   PaymentStatus,
 } from "@mollie/api-client";
-
-/**
- * Configuration options for the Mollie payment provider
- * @property apiKey - The Mollie API key
- * @property redirectUrl - The URL to redirect to after payment
- * @property medusaUrl - The URL of the Medusa instance - defaults to http://localhost:9000
- * @property autoCapture - Whether to automatically capture payments - defaults to true
- * @property description - The description that appears on the payment
- * @property debug - Whether to enable debug mode
- */
-type Options = {
-  apiKey: string;
-  redirectUrl: string;
-  medusaUrl: string;
-  autoCapture?: boolean;
-  description?: string;
-  debug?: boolean;
-};
+import { ProviderOptions, PaymentOptions } from "../types";
+import { PaymentData } from "@mollie/api-client/dist/types/data/payments/data";
 
 /**
  * Dependencies injected into the service
@@ -65,13 +50,10 @@ type InjectedDependencies = {
 /**
  * Implementation of Mollie Payment Provider for Medusa
  */
-class MolliePaymentProviderService extends AbstractPaymentProvider {
-  static readonly identifier = "mollie";
+abstract class MollieBase extends AbstractPaymentProvider {
   protected logger: Logger;
-  protected options: Options;
+  protected options: ProviderOptions;
   protected client: ReturnType<typeof createMollieClient>;
-  protected medusaUrl: string;
-  protected webhookUrl: string;
 
   protected debug: boolean;
 
@@ -80,7 +62,7 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
    * @param options - The options to validate
    * @throws {MedusaError} If API key is missing
    */
-  static validateOptions(options: Record<string, unknown>): void {
+  static validateOptions(options: ProviderOptions): void {
     if (!options.apiKey || !options.redirectUrl || !options.medusaUrl) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
@@ -94,28 +76,40 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
    * @param container - The dependency container
    * @param options - Configuration options
    */
-  constructor(container: InjectedDependencies, options: Options) {
+  constructor(container: InjectedDependencies, options: ProviderOptions) {
     super(container, options);
 
     this.logger = container.logger;
     this.options = options;
-    this.medusaUrl = options.medusaUrl || "http://localhost:9000";
     this.debug =
       options.debug ||
       process.env.NODE_ENV === "development" ||
       process.env.NODE_ENV === "test" ||
       false;
-    this.webhookUrl = `${
-      options.medusaUrl.endsWith("/")
-        ? options.medusaUrl.slice(0, -1)
-        : options.medusaUrl
-    }/hooks/payment/${MolliePaymentProviderService.identifier}_${
-      MolliePaymentProviderService.identifier
-    }`;
 
     this.client = createMollieClient({
       apiKey: options.apiKey,
     });
+  }
+
+  abstract get paymentCreateOptions(): PaymentOptions;
+
+  normalizePaymentCreateParams(): Partial<PaymentCreateParams> {
+    const res = {} as Partial<PaymentCreateParams>;
+
+    if (this.paymentCreateOptions.method) {
+      res.method = this.paymentCreateOptions.method as PaymentMethod;
+    }
+
+    res.webhookUrl = this.paymentCreateOptions.webhookUrl;
+
+    res.captureMode =
+      this.paymentCreateOptions.captureMethod ??
+      (this.options.autoCapture !== false
+        ? CaptureMethod.automatic
+        : CaptureMethod.manual);
+
+    return res;
   }
 
   /**
@@ -128,8 +122,10 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
     amount,
     currency_code,
   }: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
+    const normalizedParams = this.normalizePaymentCreateParams();
     try {
       const createParams: PaymentCreateParams = {
+        ...normalizedParams,
         billingAddress: {
           streetAndNumber: context?.customer?.billing_address?.address_1 || "",
           postalCode: context?.customer?.billing_address?.postal_code || "",
@@ -143,11 +139,7 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
         },
         description:
           this.options.description || "Mollie payment created by Medusa",
-        captureMode: this.options.autoCapture
-          ? CaptureMethod.automatic
-          : CaptureMethod.manual,
         redirectUrl: this.options.redirectUrl,
-        webhookUrl: this.webhookUrl,
         metadata: {
           idempotency_key: context?.idempotency_key,
         },
@@ -244,25 +236,33 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
     }
 
     try {
-      let status = await this.getPaymentStatus({
+      let status: PaymentSessionStatus | PaymentStatus;
+
+      const data = await this.retrievePayment({
         data: {
           id: externalId,
         },
-      }).then((res) => res.status);
+      }).then(({ data }) => data as unknown as PaymentData);
 
-      if (status === "authorized" && !this.options.autoCapture) {
+      status = data?.status as PaymentStatus;
+      const captureMode = data?.captureMode as CaptureMethod;
+
+      if (
+        status === PaymentStatus.authorized &&
+        captureMode === CaptureMethod.manual
+      ) {
         await this.client.paymentCaptures.create({
           paymentId: externalId,
         });
-
-        status = await this.getPaymentStatus({
-          data: {
-            id: externalId,
-          },
-        }).then((res) => res.status);
       }
 
-      if (status !== "captured") {
+      status = await this.getPaymentStatus({
+        data: {
+          id: externalId,
+        },
+      }).then((res) => res.status as PaymentSessionStatus);
+
+      if (status !== PaymentSessionStatus.CAPTURED) {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           `Payment is not captured: current status is ${status}`
@@ -519,7 +519,7 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
         throw new MedusaError(MedusaError.Types.NOT_FOUND, "Payment not found");
       }
 
-      const status = payment?.status;
+      const status = payment?.status as PaymentStatus;
       const session_id = (payment?.metadata as Record<string, any>)
         ?.idempotency_key;
       const amount = new BigNumber(payment?.amount as number);
@@ -531,40 +531,40 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
       };
 
       switch (status) {
-        case "authorized":
+        case PaymentStatus.authorized:
           return {
-            action: "authorized",
+            action: PaymentActions.AUTHORIZED,
             data: baseData,
           };
-        case "paid":
+        case PaymentStatus.paid:
           return {
-            action: "captured",
+            action: PaymentActions.SUCCESSFUL,
             data: baseData,
           };
-        case "expired":
-        case "failed":
+        case PaymentStatus.expired:
+        case PaymentStatus.failed:
           return {
-            action: "failed",
+            action: PaymentActions.FAILED,
             data: baseData,
           };
-        case "canceled":
+        case PaymentStatus.canceled:
           return {
-            action: "canceled",
+            action: PaymentActions.CANCELED,
             data: baseData,
           };
-        case "pending":
+        case PaymentStatus.pending:
           return {
-            action: "pending",
+            action: PaymentActions.PENDING,
             data: baseData,
           };
-        case "open":
+        case PaymentStatus.open:
           return {
-            action: "requires_more",
+            action: PaymentActions.REQUIRES_MORE,
             data: baseData,
           };
         default:
           return {
-            action: "not_supported",
+            action: PaymentActions.NOT_SUPPORTED,
             data: baseData,
           };
       }
@@ -594,4 +594,4 @@ class MolliePaymentProviderService extends AbstractPaymentProvider {
   }
 }
 
-export default MolliePaymentProviderService;
+export default MollieBase;
