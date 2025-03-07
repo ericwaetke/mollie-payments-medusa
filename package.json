@@ -20,7 +20,13 @@
     "plugin",
     "medusa-plugin-other",
     "medusa-plugin",
-    "medusa-v2"
+    "medusa-v2",
+    "payment-provider",
+    "medusa-payment-provider",
+    "mollie",
+    "mollie-payments",
+    "mollie-payments-medusa",
+    "mollie-payments-medusa-plugin"
   ],
   "scripts": {
     "build": "medusa plugin:build",
