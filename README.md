@@ -114,13 +114,15 @@ class MollieNewMethodService extends MollieBase {
 
   get paymentCreateOptions(): PaymentOptions {
     return {
-      method: PaymentMethod.new - method,
+      method: PaymentMethod.newMethod,
     };
   }
 }
 
 export default MollieNewMethodService;
 ```
+
+Make sure to replace `new method` with the actual Mollie payment method ID. 
 
 Then add your new service to the list of services in `src/providers/mollie/index.ts`.
 
