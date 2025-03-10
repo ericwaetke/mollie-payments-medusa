@@ -1,6 +1,21 @@
 # Mollie Payments for Medusa
 
-A comprehensive payment provider plugin for Medusa V2 that integrates with Mollie's payment gateway.
+A comprehensive payment provider plugin that enables [Mollie](https://www.mollie.com/gb/) payments on [Medusa](https://medusajs.com/) V2 projects.
+
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Configuration Options](#configuration-options)
+  - [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Client-Side Integration](#client-side-integration)
+- [Supported Payment Methods](#supported-payment-methods)
+- [Extending the Plugin](#extending-the-plugin)
+- [Local Development and Customization](#local-development-and-customization)
+- [License](#license)
 
 ## Features
 
@@ -20,11 +35,17 @@ A comprehensive payment provider plugin for Medusa V2 that integrates with Molli
 
 - **Automatic Capture**: Configurable automatic capture of payments.
 
+> [!WARNING]
+> _This plugin has not been tested on a live store. Please conduct thorough testing before using it in a production environment. I am not responsible for any missed or failed payments resulting from the use of this plugin. If you encounter any issues, please report them [here](https://github.com/VariableVic/mollie-payments-medusa/issues)._
+
 ## Prerequisites
 
 - Medusa server v2.3.0 or later
 - Node.js v20 or later
-- A Mollie account and API key with payment methods enabled
+- A [Mollie](https://www.mollie.com/gb/) account and API key with payment methods enabled.
+
+> [!NOTE]
+> _You can get an API key from your Mollie dashboard: click Browse > Developers > API keys_
 
 ## Installation
 
@@ -44,7 +65,7 @@ const plugins = [
     options: {
       apiKey: process.env.MOLLIE_API_KEY,
       redirectUrl: process.env.MOLLIE_REDIRECT_URL,
-      medusaUrl: process.env.MEDUSA_URL || "http://localhost:9000",
+      medusaUrl: process.env.MEDUSA_URL,
       autoCapture: true, // optional, defaults to true
       description: "Mollie payment created by Medusa", // optional, defaults to "Mollie payment created by Medusa"
       debug: false, // optional, defaults to false
@@ -59,7 +80,7 @@ const plugins = [
 | ------------- | ----------------------------------------------------------------------------------------- | ----------------------- |
 | `apiKey`      | Your Mollie API key                                                                       | Required                |
 | `redirectUrl` | The URL to redirect to after payment                                                      | Required                |
-| `medusaUrl`   | The URL of your Medusa server                                                             | `http://localhost:9000` |
+| `medusaUrl`   | The URL of your Medusa server                                                             | Required                |
 | `autoCapture` | Whether to automatically capture payments                                                 | `true`                  |
 | `description` | The description that appears on the payment.                                              | `Mollie payment created by Medusa`          |
 | `debug`       | Whether to enable debug mode                                                              | `false`                 |
@@ -76,11 +97,15 @@ MEDUSA_URL=https://your-medusa-server.com
 
 ## Usage
 
-Once installed and configured, the Mollie payment methods will be available in your Medusa store.
+Once installed and configured, the Mollie payment methods will be available in your Medusa admin. To enable them, log in to you Medusa Admin, browse to Settings > Regions, add or edit a region and select the desired Mollie providers from the dropdown.
+
+![Screenshot 2025-03-10 at 14 14 43](https://github.com/user-attachments/assets/6aad3edb-7370-4aa8-9bc1-1cf35572d2e0)
+
+Make sure that the selected payment methods are enabled in your Mollie origanization settings as well.
 
 ### Client-Side Integration
 
-To integrate with your storefront, you'll need to implement the payment flow according to Mollie's documentation. Here's a basic example:
+To integrate with your storefront, you'll need to implement the payment flow according to Mollie's and Medusa's documentation. Here's a basic example:
 
 1. Create a payment session in your checkout flow
 2. Redirect the customer to the Mollie payment page
@@ -90,15 +115,15 @@ To integrate with your storefront, you'll need to implement the payment flow acc
 
 The plugin currently supports the following Mollie payment methods:
 
-| Payment Method  | Provider Key             |
-| --------------- | ------------------------ |
-| Hosted Checkout | `mollie-hosted-checkout` |
-| iDEAL           | `mollie-ideal`           |
-| Credit Card     | `mollie-card`            |
-| Bancontact      | `mollie-bancontact`      |
-| Gift Card       | `mollie-giftcard`        |
-| PayPal          | `mollie-paypal`          |
-| Apple Pay       | `mollie-apple-pay`       |
+| Payment Method  | Provider ID                       |
+| --------------- | ---------------------------------- |
+| Hosted Checkout | `pp_mollie-hosted-checkout_mollie` |
+| iDEAL           | `pp_mollie-ideal_mollie`           |
+| Credit Card     | `pp_mollie-card_mollie`            |
+| Bancontact      | `pp_mollie-bancontact_mollie`      |
+| Gift Card       | `pp_mollie-giftcard_mollie`        |
+| PayPal          | `pp_mollie-paypal_mollie`          |
+| Apple Pay       | `pp_mollie-apple-pay_mollie`       |
 
 ## Extending the Plugin
 
