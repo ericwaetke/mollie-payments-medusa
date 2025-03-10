@@ -61,7 +61,7 @@ const plugins = [
 | `redirectUrl` | The URL to redirect to after payment                                                      | Required                |
 | `medusaUrl`   | The URL of your Medusa server                                                             | `http://localhost:9000` |
 | `autoCapture` | Whether to automatically capture payments                                                 | `true`                  |
-| `description` | The description that appears on the payment. You can use `{{id}}` to include the order ID | `Order {{id}}`          |
+| `description` | The description that appears on the payment.                                              | `Mollie payment created by Medusa`          |
 | `debug`       | Whether to enable debug mode                                                              | `false`                 |
 
 ## Environment Variables
