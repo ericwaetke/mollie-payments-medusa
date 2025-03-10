@@ -21,7 +21,7 @@ A comprehensive payment provider plugin for Medusa V2 that integrates with Molli
 - **Automatic Capture**: Configurable automatic capture of payments.
 
 > [!WARNING]
-> This plugin has not been tested on a live store. Please conduct thorough testing before using it in a production environment. I am not responsible for any missed or failed payments resulting from the use of this plugin.
+> This plugin has not been tested on a live store. Please conduct thorough testing before using it in a production environment. I am not responsible for any missed or failed payments resulting from the use of this plugin. If you encounter any issues, please report them [here](https://github.com/VariableVic/mollie-payments-medusa/issues).
 
 ## Prerequisites
 
