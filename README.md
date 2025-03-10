@@ -126,15 +126,9 @@ Make sure to replace `new method` with the actual Mollie payment method ID.
 
 Export your new service from `src/providers/mollie/services/index.ts`. Then add your new service to the list of services in `src/providers/mollie/index.ts`.
 
-## Development
+## Local development and customization
 
-```bash
-# Install dependencies
-yarn
-
-# Start development server
-yarn dev
-```
+In case you want to customize and test the plugin locally, refer to the [Medusa Plugin docs](https://docs.medusajs.com/learn/fundamentals/plugins/create#3-publish-plugin-locally-for-development-and-testing).
 
 ## License
 
