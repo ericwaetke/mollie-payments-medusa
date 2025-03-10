@@ -2,6 +2,21 @@
 
 A comprehensive payment provider plugin that enables [Mollie](https://www.mollie.com/gb/) payments on [Medusa](https://medusajs.com/) V2 projects.
 
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Configuration Options](#configuration-options)
+  - [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Client-Side Integration](#client-side-integration)
+- [Supported Payment Methods](#supported-payment-methods)
+- [Extending the Plugin](#extending-the-plugin)
+- [Local Development and Customization](#local-development-and-customization)
+- [License](#license)
+
 ## Features
 
 - **Multiple Payment Methods**: Supports a wide range of Mollie payment methods including:
