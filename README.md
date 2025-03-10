@@ -124,7 +124,7 @@ export default MollieNewMethodService;
 
 Make sure to replace `new method` with the actual Mollie payment method ID. 
 
-Then add your new service to the list of services in `src/providers/mollie/index.ts`.
+Export your new service from `src/providers/mollie/services/index.ts`. Then add your new service to the list of services in `src/providers/mollie/index.ts`.
 
 ## Development
 
