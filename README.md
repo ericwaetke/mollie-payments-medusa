@@ -47,7 +47,7 @@ const plugins = [
     options: {
       apiKey: process.env.MOLLIE_API_KEY,
       redirectUrl: process.env.MOLLIE_REDIRECT_URL,
-      medusaUrl: process.env.MEDUSA_URL || "http://localhost:9000",
+      medusaUrl: process.env.MEDUSA_URL,
       autoCapture: true, // optional, defaults to true
       description: "Mollie payment created by Medusa", // optional, defaults to "Mollie payment created by Medusa"
       debug: false, // optional, defaults to false
@@ -62,7 +62,7 @@ const plugins = [
 | ------------- | ----------------------------------------------------------------------------------------- | ----------------------- |
 | `apiKey`      | Your Mollie API key                                                                       | Required                |
 | `redirectUrl` | The URL to redirect to after payment                                                      | Required                |
-| `medusaUrl`   | The URL of your Medusa server                                                             | `http://localhost:9000` |
+| `medusaUrl`   | The URL of your Medusa server                                                             | Required                |
 | `autoCapture` | Whether to automatically capture payments                                                 | `true`                  |
 | `description` | The description that appears on the payment.                                              | `Mollie payment created by Medusa`          |
 | `debug`       | Whether to enable debug mode                                                              | `false`                 |
