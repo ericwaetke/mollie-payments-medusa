@@ -46,7 +46,7 @@ const plugins = [
       redirectUrl: process.env.MOLLIE_REDIRECT_URL,
       medusaUrl: process.env.MEDUSA_URL || "http://localhost:9000",
       autoCapture: true, // optional, defaults to true
-      description: "Order {{id}}", // optional, defaults to "Order {{id}}"
+      description: "Mollie payment created by Medusa", // optional, defaults to "Mollie payment created by Medusa"
       debug: false, // optional, defaults to false
     },
   },

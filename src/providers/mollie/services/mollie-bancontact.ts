@@ -9,7 +9,7 @@ class MollieBancontactService extends MollieBase {
     return {
       method: PaymentMethod.bancontact,
       webhookUrl:
-        this.options.medusaUrl +
+        this.options_.medusaUrl +
         "/hooks/payment/" +
         PaymentProviderKeys.BANCONTACT +
         "_mollie",

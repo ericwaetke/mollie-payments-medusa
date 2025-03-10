@@ -9,7 +9,7 @@ class MolliePaypalService extends MollieBase {
     return {
       method: PaymentMethod.paypal,
       webhookUrl:
-        this.options.medusaUrl +
+        this.options_.medusaUrl +
         "/hooks/payment/" +
         PaymentProviderKeys.PAYPAL +
         "_mollie",

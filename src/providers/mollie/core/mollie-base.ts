@@ -51,11 +51,10 @@ type InjectedDependencies = {
  * Implementation of Mollie Payment Provider for Medusa
  */
 abstract class MollieBase extends AbstractPaymentProvider {
-  protected logger: Logger;
-  protected options: ProviderOptions;
-  protected client: ReturnType<typeof createMollieClient>;
-
-  protected debug: boolean;
+  protected readonly options_: ProviderOptions;
+  protected logger_: Logger;
+  protected client_: ReturnType<typeof createMollieClient>;
+  protected debug_: boolean;
 
   /**
    * Validates that the required options are provided
@@ -79,15 +78,15 @@ abstract class MollieBase extends AbstractPaymentProvider {
   constructor(container: InjectedDependencies, options: ProviderOptions) {
     super(container, options);
 
-    this.logger = container.logger;
-    this.options = options;
-    this.debug =
+    this.logger_ = container.logger;
+    this.options_ = options;
+    this.debug_ =
       options.debug ||
       process.env.NODE_ENV === "development" ||
       process.env.NODE_ENV === "test" ||
       false;
 
-    this.client = createMollieClient({
+    this.client_ = createMollieClient({
       apiKey: options.apiKey,
     });
   }
@@ -105,7 +104,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
 
     res.captureMode =
       this.paymentCreateOptions.captureMethod ??
-      (this.options.autoCapture !== false
+      (this.options_.autoCapture !== false
         ? CaptureMethod.automatic
         : CaptureMethod.manual);
 
@@ -138,25 +137,27 @@ abstract class MollieBase extends AbstractPaymentProvider {
           currency: currency_code.toUpperCase(),
         },
         description:
-          this.options.description || "Mollie payment created by Medusa",
-        redirectUrl: this.options.redirectUrl,
+          this.options_.description || "Mollie payment created by Medusa",
+        redirectUrl: this.options_.redirectUrl,
         metadata: {
           idempotency_key: context?.idempotency_key,
         },
       };
 
-      const data = await this.client.payments
+      const data = await this.client_.payments
         .create(createParams)
         .then((payment) => {
           return payment as Record<string, any>;
         })
         .catch((error) => {
-          this.logger.error(`Mollie payment creation failed: ${error.message}`);
+          this.logger_.error(
+            `Mollie payment creation failed: ${error.message}`
+          );
           throw new MedusaError(MedusaError.Types.INVALID_DATA, error.message);
         });
 
-      this.debug &&
-        this.logger.info(
+      this.debug_ &&
+        this.logger_.info(
           `Mollie payment ${data.id} successfully created with amount ${amount}`
         );
 
@@ -165,7 +166,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         data: data,
       };
     } catch (error) {
-      this.logger.error(`Error initiating Mollie payment: ${error.message}`);
+      this.logger_.error(`Error initiating Mollie payment: ${error.message}`);
       throw error;
     }
   }
@@ -201,8 +202,8 @@ abstract class MollieBase extends AbstractPaymentProvider {
         );
       }
 
-      this.debug &&
-        this.logger.info(
+      this.debug_ &&
+        this.logger_.info(
           `Mollie payment ${externalId} successfully authorized with status ${status}`
         );
 
@@ -211,7 +212,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         status,
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error authorizing payment ${externalId}: ${error.message}`
       );
       throw error;
@@ -251,7 +252,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         status === PaymentStatus.authorized &&
         captureMode === CaptureMethod.manual
       ) {
-        await this.client.paymentCaptures.create({
+        await this.client_.paymentCaptures.create({
           paymentId: externalId,
         });
       }
@@ -269,8 +270,8 @@ abstract class MollieBase extends AbstractPaymentProvider {
         );
       }
 
-      this.debug &&
-        this.logger.info(
+      this.debug_ &&
+        this.logger_.info(
           `Mollie payment ${externalId} captured with amount ${
             (input.data?.amount as BigNumberRawValue).currency_code
           } ${(input.data?.amount as BigNumberRawValue).value}`
@@ -286,7 +287,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         data: payment.data,
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error capturing payment ${externalId}: ${error.message}`
       );
       throw error;
@@ -326,7 +327,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         );
       }
 
-      const refund = await this.client.paymentRefunds.create({
+      const refund = await this.client_.paymentRefunds.create({
         paymentId: externalId,
         amount: {
           value: parseFloat(value.toString()).toFixed(2),
@@ -334,8 +335,8 @@ abstract class MollieBase extends AbstractPaymentProvider {
         },
       });
 
-      this.debug &&
-        this.logger.info(
+      this.debug_ &&
+        this.logger_.info(
           `Refund for Mollie payment ${externalId} created with amount ${currency.toUpperCase()} ${parseFloat(
             value.toString()
           ).toFixed(2)}`
@@ -345,7 +346,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         data: { ...refund },
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error refunding payment ${externalId}: ${error.message}`
       );
       throw error;
@@ -361,11 +362,11 @@ abstract class MollieBase extends AbstractPaymentProvider {
     const { id } = input.data as Record<string, any>;
 
     try {
-      const payment = await this.client.payments.get(id);
+      const payment = await this.client_.payments.get(id);
 
       if (payment.status === PaymentStatus.expired) {
-        this.debug &&
-          this.logger.info(
+        this.debug_ &&
+          this.logger_.info(
             `Mollie payment ${id} is already expired, no need to cancel`
           );
         return {
@@ -375,23 +376,23 @@ abstract class MollieBase extends AbstractPaymentProvider {
         };
       }
 
-      const newPayment = await this.client.payments
+      const newPayment = await this.client_.payments
         .cancel(id)
         .catch((error) => {
-          this.logger.warn(
+          this.logger_.warn(
             `Could not cancel Mollie payment ${id}: ${error.message}`
           );
           return { data: payment as Record<string, any> };
         });
 
-      this.debug &&
-        this.logger.info(`Mollie payment ${id} cancelled successfully`);
+      this.debug_ &&
+        this.logger_.info(`Mollie payment ${id} cancelled successfully`);
 
       return {
         data: newPayment as Record<string, any>,
       };
     } catch (error) {
-      this.logger.error(`Error cancelling payment ${id}: ${error.message}`);
+      this.logger_.error(`Error cancelling payment ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -416,7 +417,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
     const paymentId = input.data?.id as string;
 
     try {
-      const { status } = await this.client.payments.get(paymentId);
+      const { status } = await this.client_.payments.get(paymentId);
 
       const statusMap = {
         [PaymentStatus.open]: PaymentSessionStatus.REQUIRES_MORE,
@@ -430,8 +431,8 @@ abstract class MollieBase extends AbstractPaymentProvider {
 
       const mappedStatus = statusMap[status] as PaymentSessionStatus;
 
-      this.debug &&
-        this.logger.debug(
+      this.debug_ &&
+        this.logger_.debug(
           `Mollie payment ${paymentId} status: ${status} (mapped to: ${mappedStatus})`
         );
 
@@ -439,7 +440,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
         status: mappedStatus,
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error retrieving payment status for ${paymentId}: ${error.message}`
       );
       throw error;
@@ -457,12 +458,12 @@ abstract class MollieBase extends AbstractPaymentProvider {
     const paymentId = input.data?.id as string;
 
     try {
-      const data = await this.client.payments.get(paymentId);
+      const data = await this.client_.payments.get(paymentId);
       return {
         data: data as Record<string, any>,
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error retrieving Mollie payment ${paymentId}: ${error.message}`
       );
       throw error;
@@ -478,18 +479,18 @@ abstract class MollieBase extends AbstractPaymentProvider {
     const { id, ...rest } = input.data as Record<string, any>;
 
     try {
-      const data = await this.client.payments.update(id, {
+      const data = await this.client_.payments.update(id, {
         ...rest,
       });
 
-      this.debug &&
-        this.logger.info(`Mollie payment ${id} successfully updated`);
+      this.debug_ &&
+        this.logger_.info(`Mollie payment ${id} successfully updated`);
 
       return {
         data: data as Record<string, any>,
       };
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error updating Mollie payment ${id}: ${error.message}`
       );
       throw error;
@@ -569,7 +570,7 @@ abstract class MollieBase extends AbstractPaymentProvider {
           };
       }
     } catch (error) {
-      this.logger.error(
+      this.logger_.error(
         `Error processing webhook for payment ${data.id}: ${error.message}`
       );
 

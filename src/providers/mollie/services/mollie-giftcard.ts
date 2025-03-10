@@ -9,7 +9,7 @@ class MollieGiftcardService extends MollieBase {
     return {
       method: PaymentMethod.giftcard,
       webhookUrl:
-        this.options.medusaUrl +
+        this.options_.medusaUrl +
         "/hooks/payment/" +
         PaymentProviderKeys.GIFT_CARD +
         "_mollie",

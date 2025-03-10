@@ -9,12 +9,12 @@ class MollieCardService extends MollieBase {
     return {
       method: PaymentMethod.creditcard,
       webhookUrl:
-        this.options.medusaUrl +
+        this.options_.medusaUrl +
         "/hooks/payment/" +
         PaymentProviderKeys.CREDIT_CARD +
         "_mollie",
       captureMethod:
-        this.options.autoCapture !== false
+        this.options_.autoCapture !== false
           ? CaptureMethod.automatic
           : CaptureMethod.manual,
     };

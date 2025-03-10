@@ -9,7 +9,7 @@ class MollieIdealService extends MollieBase {
     return {
       method: PaymentMethod.ideal,
       webhookUrl:
-        this.options.medusaUrl +
+        this.options_.medusaUrl +
         "/hooks/payment/" +
         PaymentProviderKeys.IDEAL +
         "_mollie",
