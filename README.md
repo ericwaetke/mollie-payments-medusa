@@ -93,15 +93,15 @@ To integrate with your storefront, you'll need to implement the payment flow acc
 
 The plugin currently supports the following Mollie payment methods:
 
-| Payment Method  | Provider Key             |
-| --------------- | ------------------------ |
-| Hosted Checkout | `mollie-hosted-checkout` |
-| iDEAL           | `mollie-ideal`           |
-| Credit Card     | `mollie-card`            |
-| Bancontact      | `mollie-bancontact`      |
-| Gift Card       | `mollie-giftcard`        |
-| PayPal          | `mollie-paypal`          |
-| Apple Pay       | `mollie-apple-pay`       |
+| Payment Method  | Provider ID                       |
+| --------------- | ---------------------------------- |
+| Hosted Checkout | `pp_mollie-hosted-checkout_mollie` |
+| iDEAL           | `pp_mollie-ideal_mollie`           |
+| Credit Card     | `pp_mollie-card_mollie`            |
+| Bancontact      | `pp_mollie-bancontact_mollie`      |
+| Gift Card       | `pp_mollie-giftcard_mollie`        |
+| PayPal          | `pp_mollie-paypal_mollie`          |
+| Apple Pay       | `pp_mollie-apple-pay_mollie`       |
 
 ## Extending the Plugin
 
