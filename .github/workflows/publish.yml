@@ -45,7 +45,7 @@ jobs:
         run: yarn workspaces list || echo "No workspaces found"
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Build package
         run: yarn build
@@ -54,18 +54,43 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - name: Check version change
+      - name: Check latest GitHub release
         id: check-version
         run: |
-          git fetch
-          PREV_VERSION=$(git show origin/main:package.json | grep '"version"' | cut -d'"' -f4)
-          CURRENT_VERSION=${{ steps.package-version.outputs.current-version }}
-          if [ "$PREV_VERSION" != "$CURRENT_VERSION" ]; then
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
+          # Get current version from package.json
+          CURRENT_VERSION="${{ steps.package-version.outputs.current-version }}"
+          echo "Current version from package.json: $CURRENT_VERSION"
+
+          # Get latest GitHub release tag
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest 2>/dev/null || echo '{"tag_name":"v0.0.0"}')
+
+          # Check if we got a valid response
+          if echo "$LATEST_RELEASE" | grep -q "tag_name"; then
+            # Extract version from tag (usually in format v0.0.1)
+            LATEST_VERSION=$(echo "$LATEST_RELEASE" | jq -r '.tag_name' | sed 's/^v//') 
           else
+            # No releases found, use 0.0.0 as default
+            LATEST_VERSION="0.0.0"
+            echo "No previous GitHub releases found, using $LATEST_VERSION as baseline"
+          fi
+
+          echo "Latest GitHub release version: $LATEST_VERSION"
+
+          # Compare versions
+          if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
+            echo "Version changed from $LATEST_VERSION to $CURRENT_VERSION"
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "prev_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged: $CURRENT_VERSION"
             echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Debug Outputs
+        run: |
+          echo "Version changed: ${{ steps.check-version.outputs.version_changed }}"
+          echo "Previous version: ${{ steps.check-version.outputs.prev_version }}"
+          echo "Current version: ${{ steps.package-version.outputs.current-version }}"
 
       - name: Create GitHub Release
         if: steps.check-version.outputs.version_changed == 'true'

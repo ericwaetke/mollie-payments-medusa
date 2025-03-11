@@ -33,6 +33,10 @@
     "dev": "medusa plugin:develop",
     "prepublishOnly": "medusa plugin:build"
   },
+  "dependencies": {
+    "@mollie/api-client": "^4.1.0",
+    "@variablevic/mollie-payments-medusa": "^0.0.1"
+  },
   "devDependencies": {
     "@medusajs/cli": "2.5.1",
     "@medusajs/framework": "2.5.1",
@@ -71,9 +75,5 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "yarn@4.4.0",
-  "dependencies": {
-    "@mollie/api-client": "^4.1.0",
-    "@variablevic/mollie-payments-medusa": "workspace:*"
-  }
+  "packageManager": "yarn@4.4.0"
 }
