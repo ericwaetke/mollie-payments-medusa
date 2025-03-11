@@ -105,6 +105,6 @@ jobs:
 
       - name: Publish to npm
         if: steps.check-version.outputs.version_changed == 'true'
-        run: yarn publish --access public
+        run: yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
