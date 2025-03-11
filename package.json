@@ -34,8 +34,7 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "dependencies": {
-    "@mollie/api-client": "^4.1.0",
-    "@variablevic/mollie-payments-medusa": "^0.0.1"
+    "@mollie/api-client": "^4.1.0"
   },
   "devDependencies": {
     "@medusajs/cli": "2.5.1",
