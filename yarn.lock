@@ -8081,12 +8081,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@variablevic/mollie-payments-medusa@npm:0.0.1":
-  version: 0.0.1
-  resolution: "@variablevic/mollie-payments-medusa@npm:0.0.1"
+"@variablevic/mollie-payments-medusa@npm:^0.0.5, @variablevic/mollie-payments-medusa@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@variablevic/mollie-payments-medusa@workspace:."
   dependencies:
+    "@medusajs/admin-sdk": "npm:2.5.1"
+    "@medusajs/cli": "npm:2.5.1"
+    "@medusajs/framework": "npm:2.5.1"
+    "@medusajs/icons": "npm:2.5.1"
+    "@medusajs/medusa": "npm:2.5.1"
+    "@medusajs/test-utils": "npm:2.5.1"
+    "@medusajs/ui": "npm:4.0.4"
+    "@mikro-orm/cli": "npm:6.4.3"
+    "@mikro-orm/core": "npm:6.4.3"
+    "@mikro-orm/knex": "npm:6.4.3"
+    "@mikro-orm/migrations": "npm:6.4.3"
+    "@mikro-orm/postgresql": "npm:6.4.3"
     "@mollie/api-client": "npm:^4.1.0"
-    "@variablevic/mollie-payments-medusa": "npm:0.0.1"
+    "@swc/core": "npm:1.5.7"
+    "@types/node": "npm:^20.0.0"
+    "@types/react": "npm:^18.3.2"
+    "@types/react-dom": "npm:^18.2.25"
+    "@variablevic/mollie-payments-medusa": "npm:^0.0.5"
+    awilix: "npm:^8.0.1"
+    pg: "npm:^8.13.0"
+    prop-types: "npm:^15.8.1"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.6.2"
+    vite: "npm:^5.2.11"
+    yalc: "npm:^1.0.0-pre.53"
   peerDependencies:
     "@medusajs/admin-sdk": 2.5.1
     "@medusajs/cli": 2.5.1
@@ -8102,9 +8127,8 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/75174fb66f2b5e9a1268eb05e179923d10e920f63ef0cac055b9c7ea648c9ed4b7f24582ae9a782ff28f4680c341bac1ffd2f0399627b2e14b4af4dce24e6973
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@vitejs/plugin-react@npm:^4.2.1":
   version: 4.3.4
