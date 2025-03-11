@@ -24,6 +24,33 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Verify/Create .yarnrc.yml
+        run: |
+          if [ ! -f .yarnrc.yml ]; then
+            echo "nodeLinker: node-modules" > .yarnrc.yml
+            echo "Created .yarnrc.yml with nodeLinker: node-modules"
+          else
+            echo "Existing .yarnrc.yml content:"
+            cat .yarnrc.yml
+            if ! grep -q "nodeLinker: node-modules" .yarnrc.yml; then
+              echo "nodeLinker: node-modules" >> .yarnrc.yml
+              echo "Added nodeLinker: node-modules to existing .yarnrc.yml"
+            fi
+          fi
+
+      - name: Diagnostic - Print package.json
+        run: cat package.json
+
+      - name: Diagnostic - Print workspace info
+        run: yarn workspaces info || echo "No workspaces found"
+
+      - name: Generate fresh lockfile
+        run: |
+          # Delete existing lockfile if it exists
+          rm -f yarn.lock || true
+          # Generate a fresh lockfile
+          yarn install
+
       - name: Install dependencies
         run: yarn install --immutable
 
