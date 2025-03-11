@@ -41,15 +41,6 @@ jobs:
       - name: Diagnostic - Print package.json
         run: cat package.json
 
-      - name: Diagnostic - Print workspace info
-        run: yarn workspaces list || echo "No workspaces found"
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build package
-        run: yarn build
-
       - name: Get version from package.json
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
@@ -91,6 +82,19 @@ jobs:
           echo "Version changed: ${{ steps.check-version.outputs.version_changed }}"
           echo "Previous version: ${{ steps.check-version.outputs.prev_version }}"
           echo "Current version: ${{ steps.package-version.outputs.current-version }}"
+
+      # Only run the remaining steps if the version has changed
+      - name: Install dependencies
+        if: steps.check-version.outputs.version_changed == 'true'
+        run: yarn install --immutable
+
+      - name: Diagnostic - Print workspace info
+        if: steps.check-version.outputs.version_changed == 'true'
+        run: yarn workspaces list || echo "No workspaces found"
+
+      - name: Build package
+        if: steps.check-version.outputs.version_changed == 'true'
+        run: yarn build
 
       - name: Create GitHub Release
         if: steps.check-version.outputs.version_changed == 'true'
