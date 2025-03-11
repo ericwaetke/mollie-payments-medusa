@@ -110,6 +110,10 @@ To integrate with your storefront, you'll need to implement the payment flow acc
 1. Create a payment session in your checkout flow
 2. Redirect the customer to the Mollie payment page
 3. Handle the webhook notifications to update the payment status
+   
+_Example integration using the [Medusa Next.js Starter](https://github.com/medusajs/nextjs-starter-medusa):_
+
+https://github.com/user-attachments/assets/742ee261-5e41-4e33-9a72-faf1a424fc52
 
 ### Supported Payment Methods
 
