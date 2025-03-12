@@ -66,9 +66,6 @@ const plugins = [
       apiKey: process.env.MOLLIE_API_KEY,
       redirectUrl: process.env.MOLLIE_REDIRECT_URL,
       medusaUrl: process.env.MEDUSA_URL,
-      autoCapture: true, // optional, defaults to true
-      description: "Mollie payment created by Medusa", // optional, defaults to "Mollie payment created by Medusa"
-      debug: false, // optional, defaults to false
     },
   },
 ];
