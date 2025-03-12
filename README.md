@@ -55,20 +55,29 @@ yarn add @variablevic/mollie-payments-medusa
 
 ## Configuration
 
-Add the plugin to your `medusa-config.ts` file:
+Add the provider to the `@medusajs/payment` module in your `medusa-config.ts` file:
 
 ```typescript
-const plugins = [
-  // ... other plugins
-  {
-    resolve: "@variablevic/mollie-payments-medusa",
-    options: {
-      apiKey: process.env.MOLLIE_API_KEY,
-      redirectUrl: process.env.MOLLIE_REDIRECT_URL,
-      medusaUrl: process.env.MEDUSA_URL,
-    },
-  },
-];
+modules: [
+    // ... other modules
+    {
+      resolve: "@medusajs/payment",
+      options: {
+        providers: [
+          // ... other providers
+          {
+            resolve: "@variablevic/mollie-payments-medusa/providers/mollie",
+            id: "mollie",
+            options: {
+              apiKey: process.env.MOLLIE_API_KEY,
+              redirectUrl: process.env.MOLLIE_REDIRECT_URL,
+              medusaUrl: process.env.MEDUSA_URL,
+            },
+          },
+        ],
+      },
+    }
+]
 ```
 
 ## Configuration Options
