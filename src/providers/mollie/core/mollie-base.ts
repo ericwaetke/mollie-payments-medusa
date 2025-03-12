@@ -88,7 +88,10 @@ abstract class MollieBase extends AbstractPaymentProvider {
 
     this.client_ = createMollieClient({
       apiKey: options.apiKey,
-      versionStrings: "MedusaJS/1.0.0 VariableVic/" + process.env.npm_package_version, // todo ideally determine Medusa version dynamically
+      versionStrings: [
+        "MedusaJS/" + require("@medusajs/medusa/package.json").version,
+        "VariableVic/" + process.env.npm_package_version,
+      ],
     });
   }
 
