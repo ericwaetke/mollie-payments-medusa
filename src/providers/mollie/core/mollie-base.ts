@@ -37,8 +37,9 @@ import createMollieClient, {
   PaymentMethod,
   PaymentStatus,
 } from "@mollie/api-client";
-import { ProviderOptions, PaymentOptions } from "../types";
+import { UpdateParameters } from "@mollie/api-client/dist/types/binders/payments/parameters";
 import { PaymentData } from "@mollie/api-client/dist/types/data/payments/data";
+import { PaymentOptions, ProviderOptions } from "../types";
 
 /**
  * Dependencies injected into the service
@@ -480,11 +481,32 @@ abstract class MollieBase extends AbstractPaymentProvider {
    * @returns The updated payment details
    */
   async updatePayment(input: UpdatePaymentInput): Promise<UpdatePaymentOutput> {
-    const { id, ...rest } = input.data as Record<string, any>;
+    this.debug_ &&
+      this.logger_.info(
+        "Note: Mollie does not allow updating amounts on an existing payment. \n" +
+          "Check https://docs.mollie.com/reference/update-payment for allowed updates."
+      );
+
+    const {
+      id,
+      description,
+      redirectUrl,
+      cancelUrl,
+      webhookUrl,
+      metadata,
+      restrictPaymentMethodsToCountry,
+    } = input.data as UpdateParameters & {
+      id: string;
+    };
 
     try {
       const data = await this.client_.payments.update(id, {
-        ...rest,
+        description,
+        redirectUrl,
+        cancelUrl,
+        webhookUrl,
+        metadata,
+        restrictPaymentMethodsToCountry,
       });
 
       this.debug_ &&
