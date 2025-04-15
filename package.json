@@ -4,6 +4,7 @@
   "description": "A Medusa plugin for Mollie payments.",
   "author": "Variable Vic",
   "license": "MIT",
+  "repository": "https://github.com/variablevic/mollie-payments-medusa",
   "files": [
     ".medusa/server"
   ],
@@ -16,13 +17,9 @@
     "./*": "./.medusa/server/src/*.js"
   },
   "keywords": [
-    "medusa",
-    "plugin",
-    "medusa-plugin-other",
-    "medusa-plugin",
+    "medusa-plugin-integration",
     "medusa-v2",
-    "payment-provider",
-    "medusa-payment-provider",
+    "medusa-plugin-payment",
     "mollie",
     "mollie-payments",
     "mollie-payments-medusa",
