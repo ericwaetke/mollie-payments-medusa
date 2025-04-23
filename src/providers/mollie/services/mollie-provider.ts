@@ -5,7 +5,13 @@ class MollieProviderService extends MollieBase {
   static identifier = PaymentProviderKeys.MOLLIE_HOSTED_CHECKOUT;
 
   get paymentCreateOptions(): PaymentOptions {
-    return {};
+    return {
+      webhookUrl:
+        this.options_.medusaUrl +
+        "/hooks/payment/" +
+        PaymentProviderKeys.MOLLIE_HOSTED_CHECKOUT +
+        "_mollie",
+    };
   }
 }
 
