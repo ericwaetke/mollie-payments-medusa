@@ -1,6 +1,6 @@
 {
   "name": "@variablevic/mollie-payments-medusa",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A Medusa plugin for Mollie payments.",
   "author": "Variable Vic",
   "license": "MIT",
