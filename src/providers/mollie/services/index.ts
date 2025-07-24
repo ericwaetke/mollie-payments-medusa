@@ -5,3 +5,4 @@ export { default as MollieGiftcardService } from "./mollie-giftcard";
 export { default as MollieIdealService } from "./mollie-ideal";
 export { default as MolliePaypalService } from "./mollie-paypal";
 export { default as MollieProviderService } from "./mollie-provider";
+export { default as MolliePaybybankService } from "./mollie-pay-by-bank";

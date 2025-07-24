@@ -32,4 +32,5 @@ export const PaymentProviderKeys = {
   GIFT_CARD: "mollie-giftcard",
   PAYPAL: "mollie-paypal",
   APPLE_PAY: "mollie-apple-pay",
+  PAY_BY_BANK: "mollie-paybybank",
 };

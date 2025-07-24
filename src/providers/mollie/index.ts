@@ -8,6 +8,7 @@ import {
   MollieIdealService,
   MolliePaypalService,
   MollieProviderService,
+  MolliePaybybankService,
 } from "./services";
 
 const services = [
@@ -18,6 +19,7 @@ const services = [
   MollieIdealService,
   MolliePaypalService,
   MollieProviderService,
+  MolliePaybybankService,
 ];
 
 export default ModuleProvider(Modules.PAYMENT, {
