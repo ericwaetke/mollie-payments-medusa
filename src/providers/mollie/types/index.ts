@@ -10,27 +10,28 @@ import { CaptureMethod } from "@mollie/api-client";
  * @property debug - Whether to enable debug mode
  */
 export type ProviderOptions = {
-  apiKey: string;
-  redirectUrl: string;
-  medusaUrl: string;
-  autoCapture?: boolean;
-  description?: string;
-  debug?: boolean;
+	apiKey: string;
+	redirectUrl: string;
+	medusaUrl: string;
+	autoCapture?: boolean;
+	description?: string;
+	debug?: boolean;
 };
 
 export type PaymentOptions = {
-  method?: string;
-  webhookUrl?: string;
-  captureMethod?: CaptureMethod;
+	method?: string;
+	webhookUrl?: string;
+	captureMethod?: CaptureMethod;
 };
 
 export const PaymentProviderKeys = {
-  MOLLIE_HOSTED_CHECKOUT: "mollie-hosted-checkout",
-  IDEAL: "mollie-ideal",
-  CREDIT_CARD: "mollie-card",
-  BANCONTACT: "mollie-bancontact",
-  GIFT_CARD: "mollie-giftcard",
-  PAYPAL: "mollie-paypal",
-  APPLE_PAY: "mollie-apple-pay",
-  PAY_BY_BANK: "mollie-paybybank",
+	MOLLIE_HOSTED_CHECKOUT: "mollie-hosted-checkout",
+	IDEAL: "mollie-ideal",
+	CREDIT_CARD: "mollie-card",
+	BANCONTACT: "mollie-bancontact",
+	GIFT_CARD: "mollie-giftcard",
+	PAYPAL: "mollie-paypal",
+	APPLE_PAY: "mollie-apple-pay",
+	GOOGLE_PAY: "mollie-google-pay",
+	PAY_BY_BANK: "mollie-paybybank",
 };

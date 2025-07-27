@@ -6,3 +6,4 @@ export { default as MollieIdealService } from "./mollie-ideal";
 export { default as MolliePaypalService } from "./mollie-paypal";
 export { default as MollieProviderService } from "./mollie-provider";
 export { default as MolliePaybybankService } from "./mollie-pay-by-bank";
+export { default as MollieGooglePayService } from "./mollie-google-pay";
