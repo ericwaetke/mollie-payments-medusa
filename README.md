@@ -1,184 +1,244 @@
-# Mollie Payments for Medusa
+# SumUp Payment Provider for Medusa
 
-A comprehensive payment provider plugin that enables [Mollie](https://www.mollie.com/gb/) payments on [Medusa](https://medusajs.com/) V2 projects.
-
-<p align="center">
-  <a href="https://twitter.com/intent/follow?screen_name=VariableVic" style="display: inline-block; margin-right: 8px;">
-    <img src="https://img.shields.io/twitter/follow/VariableVic.svg?label=Follow%20@VariableVic" alt="Follow @VariableVic" />
-  </a>
-
-  <a href="https://victorgerbrands.nl">
-    <img src="https://img.shields.io/badge/www-victorgerbrands.nl-blue.svg?style=flat" alt="Website" />
-  </a>
-
-  <a href="https://www.linkedin.com/in/victorgerbrands/">
-    <img src="https://img.shields.io/badge/linkedin-victorgerbrands-blue.svg?style=flat&logo=linkedin" alt="LinkedIn" />
-  </a>
-</p>
-
-## Table of Contents
-
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-  - [Configuration Options](#configuration-options)
-  - [Environment Variables](#environment-variables)
-- [Usage](#usage)
-- [Client-Side Integration](#client-side-integration)
-- [Supported Payment Methods](#supported-payment-methods)
-- [Extending the Plugin](#extending-the-plugin)
-- [Local Development and Customization](#local-development-and-customization)
-- [License](#license)
+A comprehensive payment provider for [Medusa](https://medusajs.com) that integrates with [SumUp's payment platform](https://developer.sumup.com), enabling businesses to accept online payments through various payment methods including credit cards, Apple Pay, and Google Pay.
 
 ## Features
 
-- **Multiple Payment Methods**: Supports a wide range of Mollie payment methods including:
+- **Multiple Payment Methods**: Support for card payments, Apple Pay, and Google Pay
+- **Hosted Checkout**: Secure payment processing through SumUp's hosted checkout pages
+- **Automatic Capture**: Configurable automatic payment capture
+- **Refund Support**: Full and partial refund capabilities
+- **Webhook Integration**: Real-time payment status updates via webhooks
+- **Test Mode**: Full testing capabilities with SumUp's sandbox environment
+- **TypeScript Support**: Fully typed for better developer experience
 
-  - Mollie Hosted Checkout
-  - iDEAL
-  - Bancontact
-  - Credit Card
-  - PayPal
-  - Apple Pay
-  - Gift Card
+## Supported Payment Methods
 
-- **Easily Extendable**: The modular architecture makes it easy to add support for additional Mollie payment methods.
-
-- **Webhook Support**: Full support for Mollie webhooks for real-time payment status updates.
-
-- **Automatic Capture**: Configurable automatic capture of payments.
-
-> [!WARNING]
-> _This plugin has not been tested on a live store. Please conduct thorough testing before using it in a production environment. I am not responsible for any missed or failed payments resulting from the use of this plugin. If you encounter any issues, please report them [here](https://github.com/VariableVic/mollie-payments-medusa/issues)._
-
-## Prerequisites
-
-- Medusa server v2.3.0 or later
-- Node.js v20 or later
-- A [Mollie](https://www.mollie.com/gb/) account and API key with payment methods enabled.
-
-> [!NOTE]
-> _You can get an API key from your Mollie dashboard: click Browse > Developers > API keys_
+- **Credit/Debit Cards**: Visa, Mastercard, American Express
+- **Apple Pay**: Quick and secure payments for Apple devices
+- **Google Pay**: Fast checkout for Android and web users
+- **Hosted Checkout**: Complete SumUp-hosted payment experience
 
 ## Installation
 
 ```bash
-yarn add @variablevic/mollie-payments-medusa
+npm install @sumup/sumup-payments-medusa
+# or
+yarn add @sumup/sumup-payments-medusa
 ```
 
 ## Configuration
 
-Add the provider to the `@medusajs/payment` module in your `medusa-config.ts` file:
+Add the SumUp payment provider to your `medusa-config.ts`:
 
 ```typescript
-modules: [
-    // ... other modules
+module.exports = defineConfig({
+  // ...
+  modules: [
     {
-      resolve: "@medusajs/payment",
+      resolve: "@medusajs/medusa/payment",
       options: {
         providers: [
-          // ... other providers
           {
-            resolve: "@variablevic/mollie-payments-medusa/providers/mollie",
-            id: "mollie",
+            resolve: "@sumup/sumup-payments-medusa/providers/sumup",
+            id: "sumup",
             options: {
-              apiKey: process.env.MOLLIE_API_KEY,
-              redirectUrl: process.env.MOLLIE_REDIRECT_URL,
-              medusaUrl: process.env.MEDUSA_URL,
-            },
-          },
-        ],
-      },
+              apiKey: process.env.SUMUP_API_KEY,
+              merchantCode: process.env.SUMUP_MERCHANT_CODE, // Optional
+              redirectUrl: process.env.SUMUP_REDIRECT_URL,
+              medusaUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+              autoCapture: true, // Optional, defaults to true
+              description: "Payment via Your Store", // Optional
+              debug: process.env.NODE_ENV === "development", // Optional
+              environment: "test", // Optional: "test" or "live", defaults to "test"
+            }
+          }
+        ]
+      }
     }
-]
+  ]
+})
 ```
-
-## Configuration Options
-
-| Option        | Description                                                                               | Default                 |
-| ------------- | ----------------------------------------------------------------------------------------- | ----------------------- |
-| `apiKey`      | Your Mollie API key                                                                       | Required                |
-| `redirectUrl` | The URL to redirect to after payment                                                      | Required                |
-| `medusaUrl`   | The URL of your Medusa server                                                             | Required                |
-| `autoCapture` | Whether to automatically capture payments                                                 | `true`                  |
-| `description` | The description that appears on the payment.                                              | `Mollie payment created by Medusa`          |
-| `debug`       | Whether to enable debug mode                                                              | `false`                 |
 
 ## Environment Variables
 
-Create or update your `.env` file with the following variables:
+Add these environment variables to your `.env` file:
 
-```bash
-MOLLIE_API_KEY=your_mollie_api_key
-MOLLIE_REDIRECT_URL=https://your-store.com/checkout/payment
-MEDUSA_URL=https://your-medusa-server.com
+```env
+# SumUp Configuration
+SUMUP_API_KEY=sup_sk_your_secret_key_here
+SUMUP_MERCHANT_CODE=MC123456 # Optional, will be fetched automatically if not provided
+SUMUP_REDIRECT_URL=https://your-storefront.com/order/confirmed
+MEDUSA_BACKEND_URL=https://your-backend.com
 ```
 
-## Usage
+### Getting Your SumUp Credentials
 
-Once installed and configured, the Mollie payment methods will be available in your Medusa admin. To enable them, log in to you Medusa Admin, browse to Settings > Regions, add or edit a region and select the desired Mollie providers from the dropdown.
+1. **Create a SumUp Account**: Sign up at [SumUp](https://me.sumup.com)
+2. **Get API Keys**: 
+   - For testing: Create a test account and generate test API keys
+   - For production: Complete account verification and generate live API keys
+3. **API Key Location**: Go to Settings → For developers → API Keys in your SumUp dashboard
 
-![Screenshot 2025-03-10 at 14 14 43](https://github.com/user-attachments/assets/6aad3edb-7370-4aa8-9bc1-1cf35572d2e0)
+## Payment Provider Options
 
-Make sure that the selected payment methods are enabled in your Mollie origanization settings as well.
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `apiKey` | string | Yes | Your SumUp secret API key (starts with `sup_sk_`) |
+| `merchantCode` | string | No | Your SumUp merchant code (auto-detected if not provided) |
+| `redirectUrl` | string | Yes | URL to redirect customers after payment completion |
+| `medusaUrl` | string | Yes | Your Medusa backend URL for webhooks |
+| `autoCapture` | boolean | No | Whether to automatically capture payments (default: true) |
+| `description` | string | No | Default description for payments |
+| `debug` | boolean | No | Enable debug logging (default: false) |
+| `environment` | string | No | "test" or "live" (default: "test") |
 
-### Client-Side Integration
+## Available Payment Providers
 
-To integrate with your storefront, you'll need to implement the payment flow according to Mollie's and Medusa's documentation. Here's a basic example:
+The plugin provides multiple payment provider identifiers for different payment methods:
 
-1. Create a payment session in your checkout flow
-2. Redirect the customer to the Mollie payment page
-3. Handle the webhook notifications to update the payment status
-   
-_Example integration using the [Medusa Next.js Starter](https://github.com/medusajs/nextjs-starter-medusa):_
+- `sumup-hosted-checkout`: Complete hosted payment experience
+- `sumup-card`: Direct card payment processing
+- `sumup-apple-pay`: Apple Pay integration
+- `sumup-google-pay`: Google Pay integration
 
-https://github.com/user-attachments/assets/742ee261-5e41-4e33-9a72-faf1a424fc52
+## Usage in Storefront
 
-### Supported Payment Methods
-
-The plugin currently supports the following Mollie payment methods:
-
-| Payment Method  | Provider ID                       |
-| --------------- | ---------------------------------- |
-| Hosted Checkout | `pp_mollie-hosted-checkout_mollie` |
-| iDEAL           | `pp_mollie-ideal_mollie`           |
-| Credit Card     | `pp_mollie-card_mollie`            |
-| Bancontact      | `pp_mollie-bancontact_mollie`      |
-| Gift Card       | `pp_mollie-giftcard_mollie`        |
-| PayPal          | `pp_mollie-paypal_mollie`          |
-| Apple Pay       | `pp_mollie-apple-pay_mollie`       |
-
-## Extending the Plugin
-
-To add support for additional Mollie payment methods, create a new service in `src/providers/mollie/services` that extends the `MollieBase` class:
+### Basic Checkout Integration
 
 ```typescript
-import { PaymentMethod } from "@mollie/api-client";
-import MollieBase from "../core/mollie-base";
-import { PaymentOptions, PaymentProviderKeys } from "../types";
+// In your checkout component
+import { usePaymentSession } from "@medusajs/medusa-react"
 
-class MollieNewMethodService extends MollieBase {
-  static identifier = "mollie-new-method";
+const CheckoutForm = () => {
+  const { mutate: setPaymentSession } = usePaymentSession(cart?.id)
 
-  get paymentCreateOptions(): PaymentOptions {
-    return {
-      method: PaymentMethod.newMethod,
-    };
+  const handlePaymentMethodChange = (providerId: string) => {
+    setPaymentSession({
+      provider_id: providerId, // e.g., "sumup-hosted-checkout"
+    })
   }
-}
 
-export default MollieNewMethodService;
+  return (
+    <div>
+      <button onClick={() => handlePaymentMethodChange("sumup-hosted-checkout")}>
+        Pay with SumUp
+      </button>
+      <button onClick={() => handlePaymentMethodChange("sumup-apple-pay")}>
+        Apple Pay
+      </button>
+      <button onClick={() => handlePaymentMethodChange("sumup-google-pay")}>
+        Google Pay
+      </button>
+    </div>
+  )
+}
 ```
 
-Make sure to replace `new method` with the actual Mollie payment method ID. 
+### Processing Payments
 
-Export your new service from `src/providers/mollie/services/index.ts`. Then add your new service to the list of services in `src/providers/mollie/index.ts`.
+When using SumUp's hosted checkout, customers will be redirected to SumUp's secure payment page to complete their payment. After payment, they'll be redirected back to your `redirectUrl`.
 
-## Local development and customization
+## Webhook Configuration
 
-In case you want to customize and test the plugin locally, refer to the [Medusa Plugin docs](https://docs.medusajs.com/learn/fundamentals/plugins/create#3-publish-plugin-locally-for-development-and-testing).
+The plugin automatically handles webhook endpoints for payment status updates:
+
+- **Hosted Checkout**: `/hooks/payment/sumup-hosted-checkout_sumup`
+- **Card Payments**: `/hooks/payment/sumup-card_sumup`
+- **Apple Pay**: `/hooks/payment/sumup-apple-pay_sumup`
+- **Google Pay**: `/hooks/payment/sumup-google-pay_sumup`
+
+Make sure your `medusaUrl` is accessible from the internet for webhooks to work properly.
+
+## Supported Currencies
+
+SumUp supports the following currencies:
+
+EUR, USD, GBP, CHF, SEK, DKK, NOK, PLN, CZK, HUF, BGN, RON, HRK, BRL, CLP
+
+## Testing
+
+### Test Cards
+
+For testing, use SumUp's test API keys and these test card numbers:
+
+- **Successful Payment**: 4200 0000 0000 0042
+- **Failed Payment**: 4000 0000 0000 0002
+- **3D Secure**: 4000 0000 0000 3220
+
+### Test Environment
+
+1. Create a test account in the SumUp dashboard
+2. Use test API keys in your configuration
+3. Set `environment: "test"` in your provider options
+
+## Error Handling
+
+The plugin includes comprehensive error handling:
+
+```typescript
+// Payment errors are automatically handled and logged
+// Check Medusa logs for detailed error information
+```
+
+Common error scenarios:
+- Invalid API credentials
+- Unsupported currency
+- Network connectivity issues
+- Payment declined by customer's bank
+
+## Refunds
+
+The plugin supports both full and partial refunds through Medusa's admin interface:
+
+```typescript
+// Refunds are processed automatically through SumUp's API
+// No additional configuration required
+```
+
+## Development
+
+### Building the Plugin
+
+```bash
+yarn build
+```
+
+### Development Mode
+
+```bash
+yarn dev
+```
+
+## Support
+
+- **SumUp Documentation**: https://developer.sumup.com
+- **SumUp Support**: Contact SumUp support through your dashboard
+- **Plugin Issues**: Create an issue in the repository
+
+## Requirements
+
+- Medusa v2.5.0 or higher
+- Node.js 20 or higher
+- Valid SumUp merchant account
 
 ## License
 
-TBD
+MIT License - see LICENSE file for details
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## Changelog
+
+### v1.0.0
+- Initial release with support for SumUp payments
+- Multiple payment methods (Card, Apple Pay, Google Pay)
+- Webhook integration
+- Refund support
+- Test environment support
