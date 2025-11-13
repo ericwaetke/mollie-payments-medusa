@@ -5,6 +5,7 @@ import {
 	SumUpCardService,
 	SumUpApplePayService,
 	SumUpGooglePayService,
+	SumUpPayPalService,
 } from "./services";
 
 const services = [
@@ -12,6 +13,7 @@ const services = [
 	SumUpCardService,
 	SumUpApplePayService,
 	SumUpGooglePayService,
+	SumUpPayPalService,
 ];
 
 export default ModuleProvider(Modules.PAYMENT, {

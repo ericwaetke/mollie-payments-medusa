@@ -90,7 +90,7 @@ export type SumUpTransaction = {
  * SumUp payment process data
  */
 export type SumUpPaymentProcessData = {
-	payment_type: "card" | "apple_pay" | "google_pay";
+	payment_type: "card" | "apple_pay" | "google_pay" | "paypal";
 	card?: {
 		name: string;
 		number: string;
@@ -106,6 +106,21 @@ export type SumUpPaymentProcessData = {
 		apiVersionMinor: number;
 		apiVersion: number;
 		paymentMethodData: any;
+	};
+	// PayPal is handled as an Alternative Payment Method (APM) by SumUp
+	// Personal details are required for PayPal APM processing
+	personal_details?: {
+		email?: string;
+		first_name?: string;
+		last_name?: string;
+		tax_id?: string;
+		address?: {
+			country?: string;
+			city?: string;
+			line1?: string;
+			postal_code?: string;
+			state?: string;
+		};
 	};
 };
 
@@ -171,6 +186,7 @@ export const PaymentProviderKeys = {
 	SUMUP_CARD: "sumup-card",
 	SUMUP_APPLE_PAY: "sumup-apple-pay",
 	SUMUP_GOOGLE_PAY: "sumup-google-pay",
+	SUMUP_PAYPAL: "sumup-paypal",
 } as const;
 
 /**

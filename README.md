@@ -4,7 +4,7 @@ A comprehensive payment provider for [Medusa](https://medusajs.com) that integra
 
 ## Features
 
-- **Multiple Payment Methods**: Support for card payments, Apple Pay, and Google Pay
+- **Multiple Payment Methods**: Support for card payments, Apple Pay, Google Pay, and PayPal
 - **Hosted Checkout**: Secure payment processing through SumUp's hosted checkout pages
 - **Automatic Capture**: Configurable automatic payment capture
 - **Refund Support**: Full and partial refund capabilities
@@ -17,6 +17,7 @@ A comprehensive payment provider for [Medusa](https://medusajs.com) that integra
 - **Credit/Debit Cards**: Visa, Mastercard, American Express
 - **Apple Pay**: Quick and secure payments for Apple devices
 - **Google Pay**: Fast checkout for Android and web users
+- **PayPal**: Secure payments through PayPal integration
 - **Hosted Checkout**: Complete SumUp-hosted payment experience
 
 ## Installation
@@ -101,6 +102,7 @@ The plugin provides multiple payment provider identifiers for different payment 
 - `sumup-card`: Direct card payment processing
 - `sumup-apple-pay`: Apple Pay integration
 - `sumup-google-pay`: Google Pay integration
+- `sumup-paypal`: PayPal integration
 
 ## Usage in Storefront
 
@@ -130,6 +132,9 @@ const CheckoutForm = () => {
       <button onClick={() => handlePaymentMethodChange("sumup-google-pay")}>
         Google Pay
       </button>
+      <button onClick={() => handlePaymentMethodChange("sumup-paypal")}>
+        PayPal
+      </button>
     </div>
   )
 }
@@ -147,6 +152,7 @@ The plugin automatically handles webhook endpoints for payment status updates:
 - **Card Payments**: `/hooks/payment/sumup-card_sumup`
 - **Apple Pay**: `/hooks/payment/sumup-apple-pay_sumup`
 - **Google Pay**: `/hooks/payment/sumup-google-pay_sumup`
+- **PayPal**: `/hooks/payment/sumup-paypal_sumup`
 
 Make sure your `medusaUrl` is accessible from the internet for webhooks to work properly.
 
@@ -238,7 +244,7 @@ MIT License - see LICENSE file for details
 
 ### v1.0.0
 - Initial release with support for SumUp payments
-- Multiple payment methods (Card, Apple Pay, Google Pay)
+- Multiple payment methods (Card, Apple Pay, Google Pay, PayPal)
 - Webhook integration
 - Refund support
 - Test environment support
