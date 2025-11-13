@@ -48,6 +48,14 @@ export default defineConfig({
 
 							// Optional: Environment - "test" for sandbox, "live" for production (default: "test")
 							environment: process.env.SUMUP_ENVIRONMENT || "test",
+
+							// Optional: Custom API host (for SDK initialization)
+							host: process.env.SUMUP_API_HOST,
+
+							// Optional: Additional fetch parameters for SDK requests
+							baseParams: {
+								timeout: parseInt(process.env.SUMUP_REQUEST_TIMEOUT || "30000"),
+							},
 						},
 					},
 
@@ -75,6 +83,8 @@ SUMUP_REDIRECT_URL=https://your-storefront.com/order/confirmed
 SUMUP_DESCRIPTION=Payment via Your Amazing Store
 SUMUP_AUTO_CAPTURE=true
 SUMUP_ENVIRONMENT=test
+SUMUP_API_HOST=https://api.sumup.com
+SUMUP_REQUEST_TIMEOUT=30000
 
 # Medusa Backend URL
 MEDUSA_BACKEND_URL=https://your-backend.com

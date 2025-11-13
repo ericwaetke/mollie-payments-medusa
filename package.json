@@ -31,7 +31,7 @@
 		"prepublishOnly": "medusa plugin:build"
 	},
 	"dependencies": {
-		"axios": "^1.6.0"
+		"@sumup/sdk": "^0.0.6"
 	},
 	"devDependencies": {
 		"@medusajs/cli": "2.5.1",

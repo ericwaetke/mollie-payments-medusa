@@ -8,6 +8,8 @@
  * @property description - The description that appears on the payment
  * @property debug - Whether to enable debug mode
  * @property environment - The environment to use (test or live) - defaults to test
+ * @property host - Optional custom API host (for SDK initialization)
+ * @property baseParams - Optional additional fetch parameters for SDK
  */
 export type ProviderOptions = {
 	apiKey: string;
@@ -18,10 +20,12 @@ export type ProviderOptions = {
 	description?: string;
 	debug?: boolean;
 	environment?: "test" | "live";
+	host?: string;
+	baseParams?: Record<string, any>;
 };
 
 /**
- * SumUp checkout creation data
+ * SumUp checkout creation data (compatible with SDK)
  */
 export type SumUpCheckoutData = {
 	amount: number;
@@ -37,24 +41,25 @@ export type SumUpCheckoutData = {
 		first_name?: string;
 		last_name?: string;
 	};
+	purpose?: "CHECKOUT" | "SETUP_RECURRING_PAYMENT";
 };
 
 /**
- * SumUp checkout response
+ * SumUp checkout response (compatible with SDK)
  */
 export type SumUpCheckoutResponse = {
 	id: string;
 	checkout_reference: string;
 	amount: number;
 	currency: string;
-	status: "PENDING" | "FAILED" | "PAID";
-	date: string;
+	status: "PENDING" | "FAILED" | "PAID" | "EXPIRED";
+	date?: string;
 	description?: string;
 	merchant_code: string;
-	merchant_country: string;
-	merchant_name: string;
-	purpose: "CHECKOUT";
-	transactions: SumUpTransaction[];
+	merchant_country?: string;
+	merchant_name?: string;
+	purpose: "CHECKOUT" | "SETUP_RECURRING_PAYMENT";
+	transactions?: SumUpTransaction[];
 	redirect_url?: string;
 	return_url?: string;
 	customer_id?: string;
@@ -87,7 +92,7 @@ export type SumUpTransaction = {
 };
 
 /**
- * SumUp payment process data
+ * SumUp payment process data (compatible with SDK)
  */
 export type SumUpPaymentProcessData = {
 	payment_type: "card" | "apple_pay" | "google_pay" | "paypal";
@@ -97,8 +102,12 @@ export type SumUpPaymentProcessData = {
 		expiry_month: string;
 		expiry_year: string;
 		cvv: string;
+		last_4_digits: string;
+		type: string;
 		zip_code?: string;
 	};
+	token?: string; // For tokenized payments
+	customer_id?: string; // For saved customer payments
 	apple_pay?: {
 		token: any;
 	};
@@ -125,7 +134,7 @@ export type SumUpPaymentProcessData = {
 };
 
 /**
- * SumUp payment process response
+ * SumUp payment process response (compatible with SDK)
  */
 export type SumUpPaymentProcessResponse = {
 	status: "PENDING" | "FAILED" | "PAID";
@@ -160,11 +169,13 @@ export type SumUpErrorResponse = {
 };
 
 /**
- * SumUp webhook payload
+ * SumUp webhook payload (compatible with SDK events)
  */
 export type SumUpWebhookPayload = {
 	id: string;
-	event_type: string;
+	event_type: "transaction_successful" | "transaction_failed" | "transaction_cancelled" |
+	"payment_captured" | "payment_failed" | "payment_cancelled" |
+	"checkout_paid" | "checkout_failed" | "checkout_cancelled" | "checkout_expired" | string;
 	timestamp: string;
 	resource_type: string;
 	resource: {
@@ -190,12 +201,55 @@ export const PaymentProviderKeys = {
 } as const;
 
 /**
- * SumUp API endpoints
+ * SumUp API endpoints (kept for backwards compatibility)
+ * Note: The SDK handles environment detection automatically
  */
 export const SUMUP_API_ENDPOINTS = {
 	PRODUCTION: "https://api.sumup.com",
 	SANDBOX: "https://api.sumup.com",
 } as const;
+
+/**
+ * Customer data for SDK compatibility
+ */
+export type SumUpCustomerData = {
+	customer_id: string;
+	personal_details?: {
+		first_name?: string;
+		last_name?: string;
+		email?: string;
+		phone?: string;
+		address?: {
+			line_1?: string;
+			city?: string;
+			postal_code?: string;
+			country?: string;
+		};
+	};
+};
+
+/**
+ * Payment instrument data for SDK compatibility
+ */
+export type SumUpPaymentInstrument = {
+	token: string;
+	active: boolean;
+	created_at: string;
+	card?: {
+		type: string;
+		last_4_digits: string;
+	};
+};
+
+/**
+ * Available payment methods response
+ */
+export type SumUpAvailablePaymentMethods = {
+	available_payment_methods?: Array<{
+		id: string;
+		name: string;
+	}>;
+};
 
 /**
  * SumUp supported currencies

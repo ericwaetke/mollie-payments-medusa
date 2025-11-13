@@ -1,11 +1,14 @@
 # SumUp Payment Provider for Medusa
 
-A comprehensive payment provider for [Medusa](https://medusajs.com) that integrates with [SumUp's payment platform](https://developer.sumup.com), enabling businesses to accept online payments through various payment methods including credit cards, Apple Pay, and Google Pay.
+A comprehensive payment provider for [Medusa](https://medusajs.com) that integrates with [SumUp's payment platform](https://developer.sumup.com) using the official SumUp TypeScript SDK, enabling businesses to accept online payments through various payment methods including credit cards, Apple Pay, and Google Pay.
 
 ## Features
 
+- **Official SDK Integration**: Built with the official SumUp TypeScript SDK for reliability and future-proofing
 - **Multiple Payment Methods**: Support for card payments, Apple Pay, Google Pay, and PayPal
 - **Hosted Checkout**: Secure payment processing through SumUp's hosted checkout pages
+- **Customer Management**: Create and manage customer profiles for recurring payments
+- **Payment Tokenization**: Secure storage of customer payment instruments
 - **Automatic Capture**: Configurable automatic payment capture
 - **Refund Support**: Full and partial refund capabilities
 - **Webhook Integration**: Real-time payment status updates via webhooks
@@ -52,6 +55,8 @@ module.exports = defineConfig({
               description: "Payment via Your Store", // Optional
               debug: process.env.NODE_ENV === "development", // Optional
               environment: "test", // Optional: "test" or "live", defaults to "test"
+              host: "https://api.sumup.com", // Optional: custom API host
+              baseParams: {}, // Optional: additional fetch parameters for SDK
             }
           }
         ]
@@ -93,6 +98,8 @@ MEDUSA_BACKEND_URL=https://your-backend.com
 | `description` | string | No | Default description for payments |
 | `debug` | boolean | No | Enable debug logging (default: false) |
 | `environment` | string | No | "test" or "live" (default: "test") |
+| `host` | string | No | Custom API host for SDK (default: auto-detected) |
+| `baseParams` | object | No | Additional fetch parameters for SDK requests |
 
 ## Available Payment Providers
 
@@ -172,6 +179,14 @@ For testing, use SumUp's test API keys and these test card numbers:
 - **Failed Payment**: 4000 0000 0000 0002
 - **3D Secure**: 4000 0000 0000 3220
 
+### Using the Official SDK
+
+The plugin now uses the official SumUp TypeScript SDK, which provides:
+- Automatic environment detection based on API keys
+- Built-in error handling and retry logic
+- Type-safe API interactions
+- Consistent API responses
+
 ### Test Environment
 
 1. Create a test account in the SumUp dashboard
@@ -243,8 +258,11 @@ MIT License - see LICENSE file for details
 ## Changelog
 
 ### v1.0.0
-- Initial release with support for SumUp payments
-- Multiple payment methods (Card, Apple Pay, Google Pay, PayPal)
-- Webhook integration
-- Refund support
-- Test environment support
+- **SDK Migration**: Updated to use the official SumUp TypeScript SDK
+- **Enhanced Type Safety**: Improved TypeScript definitions and SDK compatibility
+- **Customer Management**: Added support for customer creation and tokenized payments
+- **Multiple payment methods** (Card, Apple Pay, Google Pay, PayPal)
+- **Webhook integration** with comprehensive event handling
+- **Refund support** (Note: SDK-based refunds pending implementation)
+- **Test environment support** with automatic environment detection
+- **Error handling improvements** with SDK-specific error types

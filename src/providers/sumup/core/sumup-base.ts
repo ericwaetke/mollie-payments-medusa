@@ -139,6 +139,9 @@ abstract class SumUpBase extends AbstractPaymentProvider {
 				try {
 					const merchant = await this.client_.getMerchant();
 					merchantCode = merchant.merchant_code;
+					if (!merchantCode) {
+						throw new Error("Merchant code not found in API response");
+					}
 				} catch (error) {
 					this.logger_.error("Failed to get merchant code", error);
 					throw new MedusaError(
@@ -313,8 +316,22 @@ abstract class SumUpBase extends AbstractPaymentProvider {
 	 */
 	async cancelPayment(input: CancelPaymentInput): Promise<CancelPaymentOutput> {
 		try {
-			// SumUp doesn't have a specific cancel endpoint
-			// Payments that are not completed will automatically expire
+			const checkoutId = input.data?.id;
+
+			if (checkoutId) {
+				try {
+					// Try to deactivate the checkout using the SDK
+					await this.client_.deactivateCheckout(checkoutId);
+					this.logger_.debug("Successfully deactivated SumUp checkout", { checkoutId });
+				} catch (error) {
+					// If deactivation fails (e.g., already processed), just log and continue
+					this.logger_.warn("Could not deactivate checkout, it may have already been processed", {
+						checkoutId,
+						error: error.message
+					});
+				}
+			}
+
 			return {
 				data: {
 					...input.data,
@@ -449,40 +466,45 @@ abstract class SumUpBase extends AbstractPaymentProvider {
 			switch (data.event_type) {
 				case "transaction_successful":
 				case "payment_captured":
+				case "checkout_paid":
 					return {
 						action: PaymentActions.SUCCESSFUL,
 						data: {
-							session_id: data.resource.checkout_reference || "",
+							session_id: data.resource.checkout_reference || data.resource.id || "",
 							amount: new BigNumber(data.resource.amount || 0),
 						},
 					};
 
 				case "transaction_failed":
 				case "payment_failed":
+				case "checkout_failed":
 					return {
 						action: PaymentActions.FAILED,
 						data: {
-							session_id: data.resource.checkout_reference || "",
+							session_id: data.resource.checkout_reference || data.resource.id || "",
 							amount: new BigNumber(data.resource.amount || 0),
 						},
 					};
 
 				case "transaction_cancelled":
 				case "payment_cancelled":
+				case "checkout_cancelled":
+				case "checkout_expired":
 					return {
 						action: PaymentActions.CANCELED,
 						data: {
-							session_id: data.resource.checkout_reference || "",
+							session_id: data.resource.checkout_reference || data.resource.id || "",
 							amount: new BigNumber(data.resource.amount || 0),
 						},
 					};
 
 				default:
+					this.logger_.warn("Unsupported webhook event type", { event_type: data.event_type });
 					return {
 						action: PaymentActions.NOT_SUPPORTED,
 						data: {
-							session_id: "",
-							amount: new BigNumber(0),
+							session_id: data.resource.checkout_reference || data.resource.id || "",
+							amount: new BigNumber(data.resource.amount || 0),
 						},
 					};
 			}

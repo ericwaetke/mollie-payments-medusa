@@ -1951,15 +1951,6 @@
     postgres-date "2.1.0"
     postgres-interval "4.0.2"
 
-"@mollie/api-client@^4.1.0":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@mollie/api-client/-/api-client-4.3.3.tgz#41110b2c5d7cc6cba5f8dd81df7695d91ab41fca"
-  integrity sha512-vA8EM3nO8pcTX2AAG93FQElZ9uVpKJ7DBCEalvyStZEnGYGD3fIVPs6Pmr0lIB2tkjrqjEdbhfwwaK4MtBxs+w==
-  dependencies:
-    "@types/node-fetch" "^2.6.12"
-    node-fetch "^2.7.0"
-    ruply "^1.0.1"
-
 "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@msgpackr-extract/msgpackr-extract-darwin-arm64/-/msgpackr-extract-darwin-arm64-3.0.3.tgz#9edec61b22c3082018a79f6d1c30289ddf3d9d11"
@@ -4679,6 +4670,11 @@
     "@smithy/types" "^4.3.1"
     tslib "^2.6.2"
 
+"@sumup/sdk@^1.0.0":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@sumup/sdk/-/sdk-0.0.6.tgz#ed37fa24a1df076d90638c453cfc5bc34456945a"
+  integrity sha512-y/QjiVB9VOfkuKcfTPcEylZy6NQoJwtYWEgBEFQ/a83rjZHZJBeVe3bpOJMqIQMCSyW0u6gKwb6XL74euiJ5dg==
+
 "@swc/core-darwin-arm64@1.5.7":
   version "1.5.7"
   resolved "https://registry.yarnpkg.com/@swc/core-darwin-arm64/-/core-darwin-arm64-1.5.7.tgz#2b5cdbd34e4162e50de6147dd1a5cb12d23b08e8"
@@ -4917,14 +4913,6 @@
   integrity sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==
   dependencies:
     "@types/node" "*"
-
-"@types/node-fetch@^2.6.12":
-  version "2.6.12"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.12.tgz#8ab5c3ef8330f13100a7479e2cd56d3386830a03"
-  integrity sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==
-  dependencies:
-    "@types/node" "*"
-    form-data "^4.0.0"
 
 "@types/node@*", "@types/node@>=8.1.0":
   version "24.1.0"
@@ -5240,6 +5228,15 @@ axios@^0.21.4:
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
   dependencies:
     follow-redirects "^1.14.0"
+
+axios@^1.6.0:
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.13.2.tgz#9ada120b7b5ab24509553ec3e40123521117f687"
+  integrity sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.4"
+    proxy-from-env "^1.1.0"
 
 axios@^1.8.2:
   version "1.11.0"
@@ -6500,7 +6497,7 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-form-data@^4.0.0, form-data@^4.0.4:
+form-data@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.4.tgz#784cdcce0669a9d68e94d11ac4eea98088edd2c4"
   integrity sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==
@@ -8701,11 +8698,6 @@ run-parallel@^1.1.9:
   integrity sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
   dependencies:
     queue-microtask "^1.2.2"
-
-ruply@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/ruply/-/ruply-1.0.1.tgz#9f54177232500b88d249e2f0af7bb5c63f883fa4"
-  integrity sha512-p39LnaaJyuucPGlgaB0KiyifpcuOkn24+Hq5y0ejAD/LlH+mRAbkHn2tckCLgHir+S+nis1WYG+TYEC4zHX0WQ==
 
 rxjs@^7.5.5:
   version "7.8.2"
