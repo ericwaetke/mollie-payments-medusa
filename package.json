@@ -4,6 +4,7 @@
 	"description": "A Medusa plugin for SumUp payments.",
 	"author": "SumUp",
 	"license": "MIT",
+	"type": "module",
 	"repository": "https://github.com/sumup/sumup-payments-medusa",
 	"files": [
 		".medusa/server"

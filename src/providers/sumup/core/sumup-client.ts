@@ -13,7 +13,7 @@ import type {
 } from "../types";
 
 // Dynamic import for SumUp SDK to handle ESM compatibility
-let SumUp: any;
+import SumUp from "@sumup/sdk";
 
 /**
  * SumUp SDK client for handling all interactions with SumUp's API
@@ -44,9 +44,6 @@ export class SumUpClient {
 	 */
 	private async initializeSDK(): Promise<void> {
 		try {
-			const { default: SumUpSDK } = await import("@sumup/sdk");
-			SumUp = SumUpSDK;
-
 			this.client = new SumUp({
 				apiKey: this.options.apiKey,
 				host: this.options.host,
@@ -66,12 +63,12 @@ export class SumUpClient {
 	 * Handle SDK errors and convert them to Medusa errors
 	 */
 	private handleApiError(error: any): never {
-		if (SumUp && error instanceof SumUp.APIError) {
+		if (SumUp && error instanceof Error) {
 			this.logger.error("SumUp SDK API Error");
 
 			throw new MedusaError(
 				MedusaError.Types.PAYMENT_AUTHORIZATION_ERROR,
-				`SumUp API Error: ${error.error || error.message}`
+				`SumUp API Error: ${error.name || error.message}`
 			);
 		}
 

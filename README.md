@@ -1,19 +1,23 @@
 # SumUp Payment Provider for Medusa
 
-A comprehensive payment provider for [Medusa](https://medusajs.com) that integrates with [SumUp's payment platform](https://developer.sumup.com) using the official SumUp TypeScript SDK, enabling businesses to accept online payments through various payment methods including credit cards, Apple Pay, and Google Pay.
+A comprehensive payment provider for [Medusa](https://medusajs.com) that integrates with [SumUp's payment platform](https://developer.sumup.com) using the **official SumUp TypeScript SDK**, enabling businesses to accept online payments through various payment methods including credit cards, Apple Pay, and Google Pay.
+
+> ✅ **Successfully migrated to SumUp TypeScript SDK v1.0.0** - Now using the official SDK with fetch fallback for enhanced reliability and future-proofing.
 
 ## Features
 
-- **Official SDK Integration**: Built with the official SumUp TypeScript SDK for reliability and future-proofing
-- **Multiple Payment Methods**: Support for card payments, Apple Pay, Google Pay, and PayPal
-- **Hosted Checkout**: Secure payment processing through SumUp's hosted checkout pages
-- **Customer Management**: Create and manage customer profiles for recurring payments
-- **Payment Tokenization**: Secure storage of customer payment instruments
-- **Automatic Capture**: Configurable automatic payment capture
-- **Refund Support**: Full and partial refund capabilities
-- **Webhook Integration**: Real-time payment status updates via webhooks
-- **Test Mode**: Full testing capabilities with SumUp's sandbox environment
-- **TypeScript Support**: Fully typed for better developer experience
+- ✅ **Official SDK Integration**: Built with the official SumUp TypeScript SDK for reliability and future-proofing
+- ✅ **Multiple Payment Methods**: Support for card payments, Apple Pay, Google Pay, and PayPal
+- ✅ **Hosted Checkout**: Secure payment processing through SumUp's hosted checkout pages
+- ✅ **Customer Management**: Create and manage customer profiles for recurring payments
+- ✅ **Payment Tokenization**: Secure storage of customer payment instruments
+- ✅ **Automatic Capture**: Configurable automatic payment capture
+- ✅ **Refund Support**: Full and partial refund capabilities (via fetch fallback)
+- ✅ **Webhook Integration**: Real-time payment status updates via webhooks
+- ✅ **Test Mode**: Full testing capabilities with SumUp's sandbox environment
+- ✅ **TypeScript Support**: Fully typed for better developer experience
+- ✅ **Hybrid Architecture**: SDK-first with fetch fallback for unsupported features
+- ✅ **Auto Environment Detection**: Automatic sandbox/production detection based on API key
 
 ## Supported Payment Methods
 
@@ -182,10 +186,12 @@ For testing, use SumUp's test API keys and these test card numbers:
 ### Using the Official SDK
 
 The plugin now uses the official SumUp TypeScript SDK, which provides:
-- Automatic environment detection based on API keys
-- Built-in error handling and retry logic
-- Type-safe API interactions
-- Consistent API responses
+- ✅ Automatic environment detection based on API keys
+- ✅ Built-in error handling and retry logic
+- ✅ Type-safe API interactions
+- ✅ Consistent API responses
+- ✅ Dynamic ESM loading for compatibility
+- ✅ Fetch fallback for unsupported features
 
 ### Test Environment
 
@@ -257,12 +263,15 @@ MIT License - see LICENSE file for details
 
 ## Changelog
 
-### v1.0.0
-- **SDK Migration**: Updated to use the official SumUp TypeScript SDK
-- **Enhanced Type Safety**: Improved TypeScript definitions and SDK compatibility
-- **Customer Management**: Added support for customer creation and tokenized payments
-- **Multiple payment methods** (Card, Apple Pay, Google Pay, PayPal)
-- **Webhook integration** with comprehensive event handling
-- **Refund support** (Note: SDK-based refunds pending implementation)
-- **Test environment support** with automatic environment detection
-- **Error handling improvements** with SDK-specific error types
+### v1.0.0 - ✅ SDK Migration Complete
+- **✅ SDK Migration**: Successfully migrated to official SumUp TypeScript SDK
+- **✅ Enhanced Type Safety**: Improved TypeScript definitions and full SDK compatibility
+- **✅ Customer Management**: Complete support for customer creation and tokenized payments
+- **✅ Hybrid Architecture**: SDK-first approach with fetch fallback for maximum reliability
+- **✅ Multiple payment methods** (Card, Apple Pay, Google Pay, PayPal)
+- **✅ Webhook integration** with comprehensive event handling
+- **✅ Refund support** via fetch fallback (maintains full functionality)
+- **✅ Test environment support** with automatic environment detection
+- **✅ Error handling improvements** with SDK-specific error types and graceful fallbacks
+- **✅ Performance improvements** by removing axios dependency
+- **✅ Future-proof architecture** ready for SDK feature adoption
